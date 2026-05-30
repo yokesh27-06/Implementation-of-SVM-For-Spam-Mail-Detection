@@ -1,79 +1,95 @@
-# Implementation-of-SVM-For-Spam-Mail-Detection
+# Implementation-of-K-Means-Clustering-for-Customer-Segmentation
 
 ## AIM:
-To write a program to implement the SVM For Spam Mail Detection.
+To write a program to implement the K Means Clustering for Customer Segmentation.
 
 ## Equipments Required:
 1. Hardware – PCs
 2. Anaconda – Python 3.7 Installation / Jupyter notebook
 
 ## Algorithm
-1. 
-2. 
-3. 
-4. 
+
+
+1. **Initialize the Dataset**
+   Load the customer dataset and select the required features such as Annual Income and Spending Score.
+
+2. **Choose the Number of Clusters (K)**
+   Decide the number of clusters to form using methods like the Elbow Method.
+
+3. **Assign Data Points to Clusters**
+   Calculate the distance between each data point and cluster centroid, then assign each point to the nearest centroid.
+
+4. **Update Cluster Centroids**
+   Recalculate the centroid of each cluster by taking the mean of all data points assigned to it.
+
+5. **Repeat Until Convergence**
+   Continue assigning points and updating centroids until the centroids no longer change significantly and final customer segments are formed.
+
 
 ## Program:
 ```
 /*
-Program to implement the SVM For Spam Mail Detection..
-Developed by: 
-RegisterNumber:  
+Program to implement the K Means Clustering for Customer Segmentation.
+Developed by: YOKESH H
+RegisterNumber:  212224230312
 */
 ```
-```
+
+```py
+
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.feature_extraction.text import TfidfVectorizer
-from sklearn.svm import SVC
-from sklearn.metrics import confusion_matrix
 import matplotlib.pyplot as plt
-import seaborn as sns
+from sklearn.cluster import KMeans
 
-data = pd.read_csv("/content/spam.csv", encoding='latin-1')
+data = {
+    'CustomerID': [1,2,3,4,5,6,7,8,9,10],
+    'Gender': ['Male','Female','Female','Male','Female','Male','Male','Female','Female','Male'],
+    'Age': [19,21,20,23,31,22,35,30,25,28],
+    'Annual Income (k$)': [15,16,17,18,19,20,21,22,23,24],
+    'Spending Score (1-100)': [39,81,6,77,40,76,6,94,3,72]
+}
 
-data = data[['v1','v2']]
-data.columns = ['label','message']
+df = pd.DataFrame(data)
 
-# Convert labels
-data['label'] = data['label'].map({'ham':0, 'spam':1})
+X = df[['Annual Income (k$)', 'Spending Score (1-100)']]
 
-# Features and target
-X = data['message']
-y = data['label']
+kmeans = KMeans(n_clusters=3, init='k-means++', random_state=42)
 
-# TF-IDF conversion
-vectorizer = TfidfVectorizer(stop_words='english')
-X_vectorized = vectorizer.fit_transform(X)
+df['Cluster'] = kmeans.fit_predict(X)
 
-# Train-test split
-X_train, X_test, y_train, y_test = train_test_split(
-    X_vectorized, y, test_size=0.2, random_state=42)
+plt.figure(figsize=(8,6))
 
-# Train SVM
-model = SVC(kernel='linear')
-model.fit(X_train, y_train)
+for i in range(3):
+    plt.scatter(
+        X[df['Cluster']==i]['Annual Income (k$)'],
+        X[df['Cluster']==i]['Spending Score (1-100)'],
+        label=f'Cluster {i+1}'
+    )
 
-# Predictions
-y_pred = model.predict(X_test)
+plt.scatter(
+    kmeans.cluster_centers_[:,0],
+    kmeans.cluster_centers_[:,1],
+    s=200,
+    c='yellow',
+    label='Centroids',
+    marker='X'
+)
 
-# Confusion matrix
-cm = confusion_matrix(y_test, y_pred)
-
-# Plot
-plt.figure(figsize=(5,4))
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
-            xticklabels=['Ham','Spam'],
-            yticklabels=['Ham','Spam'])
-
-plt.xlabel("Predicted")
-plt.ylabel("Actual")
-plt.title("Confusion Matrix for SVM Spam Detection")
+plt.title('Customer Segmentation (K-Means)')
+plt.xlabel('Annual Income (k$)')
+plt.ylabel('Spending Score (1-100)')
+plt.legend()
 plt.show()
-```
-## Output:
-![SVM For Spam Mail Detection](sam.png)
 
+print(df)
+```
+
+## Output:
+
+<img width="704" height="457" alt="image" src="https://github.com/user-attachments/assets/a4825d33-0126-4a97-9d22-58e65837db8b" />
+
+
+<img width="538" height="346" alt="image" src="https://github.com/user-attachments/assets/434f421a-fcdf-486c-a83b-8859646a0d66" />
 
 ## Result:
-Thus the program to implement the SVM For Spam Mail Detection is written and verified using python programming.
+Thus the program to implement the K Means Clustering for Customer Segmentation is written and verified using python programming.
